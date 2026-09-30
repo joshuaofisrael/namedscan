@@ -1,6 +1,6 @@
 // NamedScan report rendering (on page) and branded PDF (jsPDF, generated in the browser). No secrets here.
 var NS_API = "https://namedscan-api.joshofisrael.workers.dev";
-var NS_LINKS = { self_serve: "https://buy.stripe.com/bJe8wQ9Us2ZXggfc2sb3q1p", done_for_you: "https://buy.stripe.com/8x2fZi8QofMJaVV8Qgb3q1q" };
+var NS_LINKS = { self_serve: "https://buy.stripe.com/bJe8wQ9Us2ZXggfc2sb3q1p", done_for_you: "https://buy.stripe.com/cNicN63w4cAx2ppgiIb3q1r" };
 
 function nsNodash(s) {
   s = String(s == null ? "" : s);
