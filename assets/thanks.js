@@ -3,13 +3,23 @@ window.addEventListener("DOMContentLoaded", function () {
   var q = new URLSearchParams(location.search), sid = q.get("session_id") || "", plan = q.get("plan") || "";
   var st = document.getElementById("thanks-status");
   if (plan === "done_for_you") { document.getElementById("dfy-note").hidden = false; document.getElementById("plan-line").textContent = "Thank you for choosing NamedScan Done For You. Your payment was handled securely by Stripe, and a receipt is on its way from Stripe."; }
+  var single = plan === "single_report";
+  if (single) {
+    document.getElementById("thanks-title").textContent = "Thank you for your order";
+    document.getElementById("plan-line").textContent = "Thank you for ordering a NamedScan full report. Your payment was handled securely by Stripe, and a receipt is on its way from Stripe.";
+    document.getElementById("single-note").hidden = false;
+    document.getElementById("help-line").innerHTML = 'Need help? Email <a href="mailto:joshuaofisrael@gmail.com">joshuaofisrael@gmail.com</a>. This was a one time payment, so there is nothing to cancel.';
+  }
   function say(m, k) { st.className = "scanstatus " + (k || ""); st.textContent = m; }
-  if (!/^cs_(live|test)_/.test(sid)) { say("Your payment went through. Your access key and report will be emailed to you.", "ok"); return; }
+  if (!/^cs_(live|test)_/.test(sid)) { say(single ? "Your payment went through. Your report will be emailed to you." : "Your payment went through. Your access key and report will be emailed to you.", "ok"); return; }
   var tries = 0;
   function activate() {
     fetch(NS_API + "/api/activate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session_id: sid }) })
       .then(function (r) { return r.json(); }).then(function (j) {
-        if (j.ok) {
+        if (j.ok && (j.single || !j.access_key)) {
+          say("Payment confirmed. Your full report is being prepared, and it will be emailed to you when it is ready.", "ok");
+          pollOrder();
+        } else if (j.ok) {
           localStorage.setItem("namedscan_sub", JSON.stringify({ email: j.email, access_key: j.access_key }));
           document.getElementById("key-email").textContent = j.email;
           document.getElementById("key-value").textContent = j.access_key;
@@ -25,13 +35,13 @@ window.addEventListener("DOMContentLoaded", function () {
   function pollOrder() {
     fetch(NS_API + "/api/order?session_id=" + encodeURIComponent(sid)).then(function (r) { return r.json(); }).then(function (j) {
       if (j.ok && j.status === "done" && j.report_url) {
-        say("Your first report is ready." + (j.emailed ? " We also emailed you the link." : ""), "ok");
+        say((single ? "Your report is ready." : "Your first report is ready.") + (j.emailed ? " We also emailed you the link." : ""), "ok");
         var u = new URL(j.report_url);
         fetch(NS_API + "/api/report" + u.search).then(function (r) { return r.json(); }).then(function (x) { if (x.ok) { x.report.report_url = j.report_url; nsRenderReport(document.getElementById("scan-result"), x.report); } });
         return;
       }
-      if (j.ok && j.status === "needs_info") { say("Payment confirmed. We need your website, city and business type to run your first report. Use the scan form with your access key, or reply to the email we send you.", "ok"); return; }
-      if (polls++ < 60) { if (j.ok && j.status !== "queued" && j.status !== "running") {} else say("Payment confirmed. Your first full report is being prepared, and it will be emailed to you when it is ready.", "ok"); setTimeout(pollOrder, 10000); }
+      if (j.ok && j.status === "needs_info") { say(single ? "Payment confirmed. We need your website, city and business type to run your report. Please reply to the email we send you, or email joshuaofisrael@gmail.com." : "Payment confirmed. We need your website, city and business type to run your first report. Use the scan form with your access key, or reply to the email we send you.", "ok"); return; }
+      if (polls++ < 60) { if (j.ok && j.status !== "queued" && j.status !== "running") {} else say(single ? "Payment confirmed. Your full report is being prepared, and it will be emailed to you when it is ready." : "Payment confirmed. Your first full report is being prepared, and it will be emailed to you when it is ready.", "ok"); setTimeout(pollOrder, 10000); }
       else say("Your report is taking a little longer. It will be emailed to you as soon as it is ready.", "ok");
     }).catch(function () { if (polls++ < 60) setTimeout(pollOrder, 10000); });
   }

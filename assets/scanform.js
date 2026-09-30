@@ -12,16 +12,16 @@
   } catch (e) {}
   fetch(NS_API + "/api/status").then(function (r) { return r.json(); }).then(function (s) {
     var n = document.getElementById("scan-live-note");
-    if (n && s && s.free_left_today === 0) n.textContent = "Today's free checks are all taken. Please come back tomorrow.";
+    if (n && s && s.free_left_today === 0) n.textContent = "Today's free previews are all taken. Please come back tomorrow.";
   }).catch(function () {});
 
   function say(msg, kind) { status.hidden = false; status.className = "scanstatus " + (kind || ""); status.textContent = msg; }
-  function setBusy(b) { btn.disabled = b; btn.textContent = b ? "Scanning..." : "Run my scan"; }
+  function setBusy(b) { btn.disabled = b; btn.textContent = b ? "Scanning..." : "Run my free preview"; }
 
   var retries = 0;
   function run(payload) {
     setBusy(true);
-    say(payload.access_key ? "Starting your full scan. Asking ChatGPT 15 customer questions with live web search takes about one to two minutes." : "Checking your website. This takes about 10 to 20 seconds.");
+    say(payload.access_key ? "Starting your full scan. Asking ChatGPT 15 customer questions with live web search takes about one to two minutes." : "Asking ChatGPT three customer questions with live web search and checking your website. This takes about 20 to 60 seconds.");
     fetch(NS_API + "/api/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }).then(function (res) {
       var ct = res.headers.get("Content-Type") || "";
       if (ct.indexOf("ndjson") >= 0 && res.body) return readStream(res.body.getReader(), payload);
@@ -46,7 +46,9 @@
     if (m.type === "started") return;
     if (m.type === "result" && m.report) {
       setBusy(false); retries = 0;
-      say(m.cached ? "Here is your report (from a scan of this business in the last 24 hours)." : "Your report is ready.", "ok");
+      var pre = m.report.mode === "teaser" ? "Your free preview is ready." : m.report.teaser_unavailable ? "Your free website check is ready." : "Your report is ready.";
+      say(m.cached ? pre + " It comes from a check of this business in the last 24 hours." : pre, "ok");
+      m.report._email = payload.email;
       nsRenderReport(out, m.report);
       out.scrollIntoView({ behavior: "smooth", block: "start" });
       return;

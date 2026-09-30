@@ -1,6 +1,55 @@
 // NamedScan report rendering (on page) and branded PDF (jsPDF, generated in the browser). No secrets here.
 var NS_API = "https://namedscan-api.joshofisrael.workers.dev";
-var NS_LINKS = { self_serve: "https://buy.stripe.com/bJe8wQ9Us2ZXggfc2sb3q1p", done_for_you: "https://buy.stripe.com/cNicN63w4cAx2ppgiIb3q1r" };
+var NS_LINKS = { single_report: "https://buy.stripe.com/aFa7sMc2A6c96FF3vWb3q1s", self_serve: "https://buy.stripe.com/bJe8wQ9Us2ZXggfc2sb3q1p", done_for_you: "https://buy.stripe.com/cNicN63w4cAx2ppgiIb3q1r" };
+// checkout link with the buyer's email prefilled (Stripe Payment Links support prefilled_email); ref.js adds any partner code at click time
+function nsBuy(plan, email) {
+  var u = NS_LINKS[plan];
+  if (email && /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email)) u += (u.indexOf("?") < 0 ? "?" : "&") + "prefilled_email=" + encodeURIComponent(email);
+  if (window.NS_REF) u += (u.indexOf("?") < 0 ? "?" : "&") + "client_reference_id=" + encodeURIComponent(window.NS_REF);
+  return u;
+}
+function nsUnlockButtons(email) {
+  return '<div class="cta unlock-cta"><a class="btn" href="' + nsEsc(nsBuy("single_report", email)) + '" data-plan="single_report">Full report $5</a>' +
+    '<a class="btn ghost" href="' + nsEsc(nsBuy("self_serve", email)) + '" data-plan="self_serve">Self Serve $15 a month (10 reports)</a></div>' +
+    '<p class="note">Your full report is emailed to you. Reports are usually delivered within one business day. Orders placed on weekends may experience delays.</p>';
+}
+function nsLocked(title, rows) {
+  var fake = [];
+  for (var i = 0; i < rows; i++) fake.push('<div class="fakerow"><span style="width:' + (40 + (i * 17) % 45) + '%"></span><span style="width:' + (15 + (i * 11) % 20) + '%"></span></div>');
+  return '<div class="lockrow"><h4><span class="lockicon" aria-hidden="true">&#128274;</span> ' + nsT(title) + '</h4><div class="blurbox" aria-hidden="true">' + fake.join("") + '</div></div>';
+}
+function nsRenderTeaser(el, r) {
+  var sc = r.score || { score: 0, band: "Low" };
+  var color = sc.score >= 75 ? "var(--ok)" : sc.score >= 50 ? "var(--teal2)" : sc.score >= 25 ? "var(--warn)" : "var(--bad)";
+  var s = r.summary || {};
+  var h = [];
+  h.push('<div class="paper result teaser">');
+  h.push('<span class="stamp">FREE PREVIEW</span>');
+  h.push('<h3 style="margin:0;color:var(--navy)">' + nsT(r.business.name) + '</h3>');
+  h.push('<div class="meta">' + nsT(r.business.city + ", " + r.business.state) + " | " + nsT(r.business.category) + " | " + nsT(nsDate(r.date)) + ' | Free preview, ' + s.answered + ' live ChatGPT questions</div>');
+  h.push('<div class="score"><div class="ring" style="background:conic-gradient(' + color + ' 0 ' + sc.score + '%,#eceff4 ' + sc.score + '% 100%)"><span>' + sc.score + '</span></div><div><strong>Estimated AI visibility score: ' +
+    sc.score + ' of 100 (' + nsT(sc.band) + ')</strong><br><span class="note">Named in ' + s.mentions + ' of ' + s.answered + ' customer questions we asked ChatGPT with live web search. This is an estimate from a short preview; the full report asks all ' + (r.full_questions || 15) + ' questions.</span></div></div>');
+  h.push('<h4 style="margin:18px 0 6px">Named instead of you most often</h4><ol class="list">');
+  if (r.top_competitor) h.push('<li><strong>' + nsT(r.top_competitor) + '</strong></li>');
+  else h.push('<li>No other business stood out in these ' + s.answered + ' answers.</li>');
+  var more = Math.max(0, (r.competitors_found || 0) - (r.top_competitor ? 1 : 0));
+  h.push('</ol>');
+  if (more) h.push('<p class="note">' + more + ' more ' + (more === 1 ? "business was" : "businesses were") + ' named in this preview. See them all in the full report.</p>');
+  h.push('<div class="locked">');
+  h.push(nsLocked("All " + (r.full_questions || 15) + " customer questions, with each answer and your result", 5));
+  h.push(nsLocked("Every competitor named, and how often", 3));
+  h.push(nsLocked("Sources ChatGPT cited", 2));
+  h.push(nsLocked("Website readiness findings", 3));
+  h.push(nsLocked("Prioritized fix list", 3));
+  h.push(nsLocked("Branded PDF report to download and share", 1));
+  h.push('<div class="lockover"><div class="lockcard"><strong>Unlock the full report</strong><p>See every question, every competitor, the sources AI relied on, your website findings and a prioritized fix list, with a branded PDF.</p>' + nsUnlockButtons(r._email) + '</div></div>');
+  h.push('</div>');
+  h.push('<p class="note">AI answers change often, so this preview is a dated snapshot. We work to improve and measure AI visibility; we do not promise or guarantee rankings or recommendations.</p>');
+  h.push('</div>');
+  el.innerHTML = h.join("");
+  el.hidden = false;
+}
+
 
 function nsNodash(s) {
   s = String(s == null ? "" : s);
@@ -15,6 +64,7 @@ function nsDate(d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ""); if (!m) 
 function nsPct(v) { return Math.round((v || 0) * 100) + "%"; }
 
 function nsRenderReport(el, r) {
+  if (r.mode === "teaser") return nsRenderTeaser(el, r);
   var live = r.mode === "live" || r.mode === "sample";
   var isFree = r.plan === "free";
   var sc = r.score || { score: 0, band: "Low" };
@@ -22,6 +72,7 @@ function nsRenderReport(el, r) {
   var modeLabel = r.mode === "sample" ? "Sample data for testing" : r.mode === "live" ? "Live ChatGPT scan with web search" : "Free website AI readiness check";
   var h = [];
   h.push('<div class="paper result">');
+  if (r.note) h.push('<p class="scanstatus">' + nsT(r.note) + '</p>');
   if (r.mode === "sample") h.push('<span class="stamp">SAMPLE DATA</span>');
   h.push('<h3 style="margin:0;color:var(--navy)">' + nsT(r.business.name) + '</h3>');
   h.push('<div class="meta">' + nsT(r.business.city + ", " + r.business.state) + " | " + nsT(r.business.category) + " | " + nsT(nsDate(r.date)) + " | " + nsT(modeLabel) + '</div>');
@@ -32,7 +83,7 @@ function nsRenderReport(el, r) {
       : "How ready your website is for AI assistants to read, trust and cite.") + "</span></div></div>");
   if (!live) {
     h.push('<p class="note">This free check reads your website the way AI crawlers do. The full NamedScan report also asks ChatGPT, with live web search, the ' + (r.prompts || []).length +
-      ' customer questions listed below and records whether your business is named and who is named instead. Self Serve subscribers get full reports instantly.</p>');
+      ' customer questions listed below and records whether your business is named and who is named instead.</p>');
   }
   var fixes = r.fixes || [];
   var shown = isFree ? fixes.slice(0, 3) : fixes;
@@ -59,8 +110,8 @@ function nsRenderReport(el, r) {
     r.site.checks.forEach(function (c) { h.push('<tr><td>' + nsT(c.label) + '</td><td><span class="pill ' + (c.status === "pass" ? "ok" : c.status === "warn" ? "mid" : "no") + '">' + (c.status === "pass" ? "Pass" : c.status === "warn" ? "Improve" : "Missing") + '</span></td><td>' + nsT(c.detail) + '</td></tr>'); });
     h.push('</tbody></table></div>');
   }
-  h.push('<div class="cta" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px"><button class="btn" type="button" data-pdf>Download PDF report</button>' +
-    (isFree ? '<a class="btn ghost" href="' + NS_LINKS.self_serve + '">Get full reports, $15/mo</a>' : '') + '</div>');
+  h.push('<div class="cta" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px"><button class="btn' + (isFree ? ' ghost' : '') + '" type="button" data-pdf>Download PDF' + (isFree ? ' of this check' : ' report') + '</button></div>');
+  if (isFree) h.push('<h4 style="margin:18px 0 6px">Get the full ChatGPT report</h4>' + nsUnlockButtons(r._email));
   if (r.report_url) h.push('<p class="note">Private link to this report: <a href="' + nsEsc(r.report_url) + '">' + nsEsc(r.report_url) + '</a></p>');
   h.push('<p class="note">AI answers change often, so this report is a dated snapshot. We work to improve and measure AI visibility; we do not promise or guarantee rankings or recommendations.</p>');
   h.push('</div>');
@@ -136,7 +187,7 @@ function nsPdf(r) {
   if (shown.length) {
     heading(isFree ? "Top fixes" : "Fix list, in priority order");
     shown.forEach(function (f, k) { para((k + 1) + ". " + f.title + " (" + f.priority + " priority)", 11, NAVY, true); para(f.detail, 10, MUTED, false, 14); y += 4; });
-    if (isFree && fixes.length > 3) para(fixes.length - 3 + " more fixes are included in the full report (Self Serve, $15 a month, namedscan.com).", 10, TEAL, true);
+    if (isFree && fixes.length > 3) para(fixes.length - 3 + " more fixes are included in the full report ($5 one time, or Self Serve at $15 a month, namedscan.com).", 10, TEAL, true);
   }
   if (live && r.competitors && r.competitors.length) {
     heading("Businesses named instead");
