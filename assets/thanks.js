@@ -1,11 +1,10 @@
 // Thank you page: turns the Stripe checkout session into an access key and shows the first report when it is ready.
-var NS_DELAY = "Reports are usually delivered within one business day. Orders placed on weekends may experience delays.";
 window.addEventListener("DOMContentLoaded", function () {
   var q = new URLSearchParams(location.search), sid = q.get("session_id") || "", plan = q.get("plan") || "";
   var st = document.getElementById("thanks-status");
   if (plan === "done_for_you") { document.getElementById("dfy-note").hidden = false; document.getElementById("plan-line").textContent = "Thank you for choosing NamedScan Done For You. Your payment was handled securely by Stripe, and a receipt is on its way from Stripe."; }
   function say(m, k) { st.className = "scanstatus " + (k || ""); st.textContent = m; }
-  if (!/^cs_(live|test)_/.test(sid)) { say("Your payment went through. Your access key and report will be emailed to you. " + NS_DELAY, "ok"); return; }
+  if (!/^cs_(live|test)_/.test(sid)) { say("Your payment went through. Your access key and report will be emailed to you.", "ok"); return; }
   var tries = 0;
   function activate() {
     fetch(NS_API + "/api/activate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session_id: sid }) })
@@ -18,8 +17,8 @@ window.addEventListener("DOMContentLoaded", function () {
           say("Payment confirmed. Your first full report is being prepared.", "ok");
           pollOrder();
         } else if (j.pending && tries < 20) { tries++; setTimeout(activate, 4000); }
-        else if (j.pending) { say("Your payment went through, and we are still confirming it on our side. Your access key and first report will be emailed to you. " + NS_DELAY, "ok"); }
-        else { say(nsNodash(j.message || "We could not show your access key here.") + " Your access key and report will be emailed to you. " + NS_DELAY, "bad"); pollOrder(); }
+        else if (j.pending) { say("Your payment went through, and we are still confirming it on our side. Your access key and first report will be emailed to you.", "ok"); }
+        else { say(nsNodash(j.message || "We could not show your access key here.") + " Your access key and report will be emailed to you.", "bad"); pollOrder(); }
       }).catch(function () { if (tries++ < 20) setTimeout(activate, 4000); });
   }
   var polls = 0;
@@ -32,8 +31,8 @@ window.addEventListener("DOMContentLoaded", function () {
         return;
       }
       if (j.ok && j.status === "needs_info") { say("Payment confirmed. We need your website, city and business type to run your first report. Use the scan form with your access key, or reply to the email we send you.", "ok"); return; }
-      if (polls++ < 60) { if (j.ok && j.status !== "queued" && j.status !== "running") {} else say("Payment confirmed. Your first full report is being prepared, and it will be emailed to you when it is ready. " + NS_DELAY, "ok"); setTimeout(pollOrder, 10000); }
-      else say("Your report is taking a little longer. It will be emailed to you as soon as it is ready. " + NS_DELAY, "ok");
+      if (polls++ < 60) { if (j.ok && j.status !== "queued" && j.status !== "running") {} else say("Payment confirmed. Your first full report is being prepared, and it will be emailed to you when it is ready.", "ok"); setTimeout(pollOrder, 10000); }
+      else say("Your report is taking a little longer. It will be emailed to you as soon as it is ready.", "ok");
     }).catch(function () { if (polls++ < 60) setTimeout(pollOrder, 10000); });
   }
   activate();
