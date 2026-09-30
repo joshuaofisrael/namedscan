@@ -11,6 +11,7 @@ function nsNodash(s) {
 }
 function nsEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 function nsT(s) { return nsEsc(nsNodash(s)); }
+function nsDate(d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ""); if (!m) return d || ""; return parseInt(m[3], 10) + " " + ["January","February","March","April","May","June","July","August","September","October","November","December"][parseInt(m[2], 10) - 1] + " " + m[1]; }
 function nsPct(v) { return Math.round((v || 0) * 100) + "%"; }
 
 function nsRenderReport(el, r) {
@@ -23,7 +24,7 @@ function nsRenderReport(el, r) {
   h.push('<div class="paper result">');
   if (r.mode === "sample") h.push('<span class="stamp">SAMPLE DATA</span>');
   h.push('<h3 style="margin:0;color:var(--navy)">' + nsT(r.business.name) + '</h3>');
-  h.push('<div class="meta">' + nsT(r.business.city + ", " + r.business.state) + " | " + nsT(r.business.category) + " | " + nsT(r.date) + " | " + nsT(modeLabel) + '</div>');
+  h.push('<div class="meta">' + nsT(r.business.city + ", " + r.business.state) + " | " + nsT(r.business.category) + " | " + nsT(nsDate(r.date)) + " | " + nsT(modeLabel) + '</div>');
   h.push('<div class="score"><div class="ring" style="background:conic-gradient(' + color + ' 0 ' + sc.score + '%,#eceff4 ' + sc.score + '% 100%)"><span>' + sc.score + '</span></div><div><strong>' +
     (live ? "AI visibility score" : "Website AI readiness") + ": " + sc.score + " of 100 (" + nsT(sc.band) + ")</strong><br><span class=\"note\">" +
     (live ? "Named in " + r.summary.mentions + " of " + r.summary.answered + " customer questions asked to ChatGPT" + (r.summary.best_position ? ", best list position " + r.summary.best_position : "") +
@@ -103,7 +104,7 @@ function nsPdf(r) {
   doc.setFont("helvetica", "bold"); doc.setFontSize(20); color(NAVY); text(r.business.name, M, y); y += 18;
   doc.setFont("helvetica", "normal"); doc.setFontSize(11); color(MUTED);
   text(r.business.website + " | " + r.business.city + ", " + r.business.state + " | " + r.business.category, M, y); y += 14;
-  text("Report date " + r.date + " | " + (r.mode === "sample" ? "Sample data for testing, not a real scan" : live ? "ChatGPT (" + ((r.engine && r.engine.display) || "OpenAI with web search") + ")" : "Website check, no AI questions asked yet"), M, y); y += 26;
+  text("Report date " + nsDate(r.date) + " | " + (r.mode === "sample" ? "Sample data for testing, not a real scan" : live ? "ChatGPT (" + ((r.engine && r.engine.display) || "OpenAI with web search") + ")" : "Website check, no AI questions asked yet"), M, y); y += 26;
 
   // score block
   var sc = r.score || { score: 0, band: "Low" };
@@ -158,7 +159,7 @@ function nsPdf(r) {
     r.site.checks.forEach(function (c) { para((c.status === "pass" ? "PASS  " : c.status === "warn" ? "IMPROVE  " : "MISSING  ") + c.label, 10.5, c.status === "pass" ? [21, 128, 61] : c.status === "warn" ? [180, 83, 9] : [185, 28, 28], true); para(c.detail, 9.5, MUTED, false, 14); });
   }
   heading("About this report");
-  para("AI answers change often and vary from one ask to the next, so this report is a dated snapshot of the answers collected on " + r.date + ". The score weighs how often and how prominently the business is named, share of voice against the businesses named most often, whether the website is cited, and website readiness. We work to improve and measure AI visibility; we do not promise or guarantee rankings or recommendations. Questions: joshuaofisrael@gmail.com.", 9.5, MUTED);
+  para("AI answers change often and vary from one ask to the next, so this report is a dated snapshot of the answers collected on " + nsDate(r.date) + ". The score weighs how often and how prominently the business is named, share of voice against the businesses named most often, whether the website is cited, and website readiness. We work to improve and measure AI visibility; we do not promise or guarantee rankings or recommendations. Questions: joshuaofisrael@gmail.com.", 9.5, MUTED);
 
   var n = doc.getNumberOfPages();
   for (var pg = 1; pg <= n; pg++) {
