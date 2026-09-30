@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
-Sitemap: https://joshuaofisrael.github.io/namedscan/sitemap.xml
+Disallow: /report.html
+Disallow: /thanks.html
+Sitemap: https://namedscan.com/sitemap.xml
