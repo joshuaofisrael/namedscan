@@ -10,7 +10,7 @@ function nsBuy(plan, email) {
 }
 function nsUnlockButtons(email) {
   return '<div class="cta unlock-cta"><a class="btn" href="' + nsEsc(nsBuy("single_report", email)) + '" data-plan="single_report">Full report $5</a>' +
-    '<a class="btn ghost" href="' + nsEsc(nsBuy("self_serve", email)) + '" data-plan="self_serve">Self Serve $15 a month (10 reports)</a></div>' +
+    '<a class="btn ghost" href="' + nsEsc(nsBuy("self_serve", email)) + '" data-plan="self_serve">Self Serve $15 a month (1 report every week)</a></div>' +
     '<p class="note">Your full report is emailed to you. Reports are usually delivered within one business day. Orders placed on weekends may experience delays.</p>';
 }
 function nsLocked(title, rows) {
