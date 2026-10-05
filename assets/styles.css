@@ -22,6 +22,7 @@ h1{font-size:48px;line-height:1.1;margin:16px 0;letter-spacing:-.02em}
 .hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
 .hero .btn.ghost{color:#fff;border-color:rgba(255,255,255,.6)}
 .hero small{display:block;margin-top:14px;color:#a9bdd4}
+.hero small a{color:#5eead4}
 .chat{background:#fff;color:var(--ink);border-radius:var(--r);padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .chat .q{background:#eef2f7;border-radius:12px;padding:10px 14px;font-size:15px;margin-bottom:12px}
 .chat .a{font-size:14.5px;color:var(--muted)}
@@ -53,6 +54,9 @@ th{background:var(--bg);color:var(--navy);font-weight:700}
 .list{padding-left:18px;margin:8px 0 0;color:var(--muted)}
 .list li{margin-bottom:6px}
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:40px}
+.plans.snapshot{grid-template-columns:repeat(2,1fr)}
+.plan-group{color:var(--navy);font-size:22px;margin:0 0 14px}
+.mgmt-lead{margin-top:0;margin-bottom:22px}
 .plan{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column}
 .plan.feature{border:2px solid var(--teal);box-shadow:0 12px 36px rgba(20,184,166,.18)}
 .plan h3{margin:0;color:var(--navy);font-size:20px}
@@ -81,7 +85,7 @@ footer .row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .results-empty{display:none}
 @media (max-width:900px){
  h1{font-size:36px}.hero .grid,.report,.contact{grid-template-columns:1fr}
- .steps,.plans{grid-template-columns:1fr}
+ .steps,.plans,.plans.snapshot{grid-template-columns:1fr}
  .nav ul{display:none}
 }
 @media (max-width:560px){form.lead{grid-template-columns:1fr}h2{font-size:28px}section{padding:56px 0}.hero{padding:48px 0 56px}}

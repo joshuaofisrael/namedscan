@@ -1,6 +1,6 @@
 // NamedScan report rendering (on page) and branded PDF (jsPDF, generated in the browser). No secrets here.
 var NS_API = "https://namedscan-api.joshofisrael.workers.dev";
-var NS_LINKS = { single_report: "https://buy.stripe.com/aFa7sMc2A6c96FF3vWb3q1s", self_serve: "https://buy.stripe.com/bJe8wQ9Us2ZXggfc2sb3q1p", done_for_you: "https://buy.stripe.com/cNicN63w4cAx2ppgiIb3q1r" };
+var NS_LINKS = { single_report: "https://buy.stripe.com/aFa7sMc2A6c96FF3vWb3q1s", done_for_you: "https://buy.stripe.com/cNicN63w4cAx2ppgiIb3q1r" };
 // checkout link with the buyer's email prefilled (Stripe Payment Links support prefilled_email); ref.js adds any partner code at click time
 function nsBuy(plan, email) {
   var u = NS_LINKS[plan];
@@ -10,8 +10,8 @@ function nsBuy(plan, email) {
 }
 function nsUnlockButtons(email) {
   return '<div class="cta unlock-cta"><a class="btn" href="' + nsEsc(nsBuy("single_report", email)) + '" data-plan="single_report">Full report $5</a>' +
-    '<a class="btn ghost" href="' + nsEsc(nsBuy("self_serve", email)) + '" data-plan="self_serve">Self Serve $15 a month (1 report every week)</a></div>' +
-    '<p class="note">Your full report is emailed to you. Reports are usually delivered within one business day. Orders placed on weekends may experience delays.</p>';
+    '<a class="btn ghost" href="' + nsEsc(nsBuy("done_for_you", email)) + '" data-plan="done_for_you">Done For You $300 a month</a></div>' +
+    '<p class="note">The $5 report is a one time snapshot of whether ChatGPT names you. Done For You means Joshua works the fixes and reruns the report each month. Your report is emailed to you, usually within one business day. Orders placed on weekends may experience delays.</p>';
 }
 function nsLocked(title, rows) {
   var fake = [];
@@ -187,7 +187,7 @@ function nsPdf(r) {
   if (shown.length) {
     heading(isFree ? "Top fixes" : "Fix list, in priority order");
     shown.forEach(function (f, k) { para((k + 1) + ". " + f.title + " (" + f.priority + " priority)", 11, NAVY, true); para(f.detail, 10, MUTED, false, 14); y += 4; });
-    if (isFree && fixes.length > 3) para(fixes.length - 3 + " more fixes are included in the full report ($5 one time, or Self Serve at $15 a month, namedscan.com).", 10, TEAL, true);
+    if (isFree && fixes.length > 3) para(fixes.length - 3 + " more fixes are included in the full AI visibility report ($5 one time at namedscan.com).", 10, TEAL, true);
   }
   if (live && r.competitors && r.competitors.length) {
     heading("Businesses named instead");
