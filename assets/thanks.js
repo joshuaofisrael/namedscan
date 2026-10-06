@@ -2,7 +2,9 @@
 window.addEventListener("DOMContentLoaded", function () {
   var q = new URLSearchParams(location.search), sid = q.get("session_id") || "", plan = q.get("plan") || "";
   var st = document.getElementById("thanks-status");
+  if (plan === "starter_management") { document.getElementById("starter-note").hidden = false; document.getElementById("plan-line").textContent = "Thank you for choosing NamedScan Starter. Your payment was handled securely by Stripe, and a receipt is on its way from Stripe."; }
   if (plan === "done_for_you") { document.getElementById("dfy-note").hidden = false; document.getElementById("plan-line").textContent = "Thank you for choosing NamedScan Done For You. Your payment was handled securely by Stripe, and a receipt is on its way from Stripe."; }
+  if (plan === "growth_management") { document.getElementById("growth-note").hidden = false; document.getElementById("plan-line").textContent = "Thank you for choosing NamedScan Growth. Your payment was handled securely by Stripe, and a receipt is on its way from Stripe."; }
   var single = plan === "single_report";
   if (single) {
     document.getElementById("thanks-title").textContent = "Thank you for your order";
