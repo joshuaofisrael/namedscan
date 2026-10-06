@@ -1,5 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /report.html
-Disallow: /thanks.html
 Sitemap: https://namedscan.com/sitemap.xml
