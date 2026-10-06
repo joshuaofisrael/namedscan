@@ -15,8 +15,32 @@
     if (n && s && s.free_left_today === 0) n.textContent = "Today's free previews are all taken. Please come back tomorrow.";
   }).catch(function () {});
 
+  var idleLabel = btn.textContent;
   function say(msg, kind) { status.hidden = false; status.className = "scanstatus " + (kind || ""); status.textContent = msg; }
-  function setBusy(b) { btn.disabled = b; btn.textContent = b ? "Scanning..." : "Run my free preview"; }
+  function setBusy(b) { btn.disabled = b; btn.textContent = b ? "Scanning..." : idleLabel; }
+  function showCallout(report) {
+    var box = document.getElementById("preview-callout");
+    if (!box || !report) return;
+    var s = report.summary || {};
+    var answered = typeof s.answered === "number" ? s.answered : null;
+    var parts = [];
+    if (typeof s.mentions === "number" && answered) parts.push("Named in " + s.mentions + " of " + answered + " questions");
+    var comps = Array.isArray(report.competitors) ? report.competitors : [];
+    var named = {};
+    comps.forEach(function (c) {
+      if (!c || !c.name) return;
+      named[c.name] = 1;
+      if (typeof c.answers === "number" && answered) parts.push(c.name + " named in " + c.answers + " of " + answered);
+      else parts.push(c.name + " was named");
+    });
+    if (report.top_competitor && !named[report.top_competitor]) parts.push(report.top_competitor + " was named");
+    else if (!comps.length && !report.top_competitor && typeof report.competitors_found === "number" && report.competitors_found > 0) parts.push(report.competitors_found + (report.competitors_found === 1 ? " other was named" : " others were named"));
+    if (parts.length < 1 || (parts.length === 1 && parts[0].indexOf("Named in ") === 0 && !report.top_competitor && !comps.length && !(report.competitors_found > 0))) {
+      box.hidden = true; box.textContent = ""; return;
+    }
+    box.hidden = false;
+    box.textContent = parts.join("; ");
+  }
 
   var retries = 0;
   function run(payload) {
@@ -49,8 +73,11 @@
       var pre = m.report.mode === "teaser" ? "Your free preview is ready." : m.report.teaser_unavailable ? "Your free website check is ready." : "Your report is ready.";
       say(m.cached ? pre + " It comes from a check of this business in the last 24 hours." : pre, "ok");
       m.report._email = payload.email;
+      showCallout(m.report);
       nsRenderReport(out, m.report);
-      out.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (!payload.access_key && window.nsTrackLead) window.nsTrackLead();
+      var callout = document.getElementById("preview-callout");
+      (callout && !callout.hidden ? callout : out).scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     if (m.reason === "busy" && retries < 12) {
@@ -69,6 +96,8 @@
     var d = new FormData(f);
     var p = {};
     ["name", "email", "business", "website", "city", "state", "category", "hp", "access_key"].forEach(function (k) { p[k] = (d.get(k) || "").toString().trim(); });
+    var attr = window.NS_ATTR || {};
+    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "fbclid"].forEach(function (k) { if (attr[k]) p[k] = attr[k]; });
     if (p.website && !/^https?:\/\//i.test(p.website)) p.website = "https://" + p.website;
     if (!p.access_key) delete p.access_key;
     retries = 0;

@@ -5,7 +5,8 @@ var NS_LINKS = { single_report: "https://buy.stripe.com/aFa7sMc2A6c96FF3vWb3q1s"
 function nsBuy(plan, email) {
   var u = NS_LINKS[plan];
   if (email && /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email)) u += (u.indexOf("?") < 0 ? "?" : "&") + "prefilled_email=" + encodeURIComponent(email);
-  if (window.NS_REF) u += (u.indexOf("?") < 0 ? "?" : "&") + "client_reference_id=" + encodeURIComponent(window.NS_REF);
+  var refId = window.nsClientReference ? window.nsClientReference() : (window.NS_REF || window.NS_ADS_REF || "");
+  if (refId) u += (u.indexOf("?") < 0 ? "?" : "&") + "client_reference_id=" + encodeURIComponent(refId);
   return u;
 }
 function nsUnlockButtons(email) {
