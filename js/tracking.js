@@ -10,13 +10,6 @@
   var purchaseLabel = filled(cfg.GOOGLE_ADS_PURCHASE_LABEL);
   var pixel = filled(cfg.META_PIXEL_ID);
 
-  function boot() {
-    Array.prototype.forEach.call(document.querySelectorAll("[data-booking]"), function (a) {
-      if (cfg.BOOKING_URL) a.href = cfg.BOOKING_URL;
-    });
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
-
   function loadGtag() {
     if (window.gtag || (!ga4 && !ads)) return;
     var s = document.createElement("script");

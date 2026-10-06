@@ -2,7 +2,7 @@
 // A visit with ?ref=CODE stores CODE for 90 days (localStorage + ns_ref cookie).
 // A visit with utm_*, gclid, or fbclid stores those values for 90 days (localStorage + ns_attr cookie).
 // Stripe client_reference_id is the creator ref when one is stored.
-// With no ref and a paid source, it is a compact id such as ads_google_dentist.
+// With no ref and a paid source, it is a compact id such as ads_google_local.
 (function () {
   var DAYS = 90, MS = DAYS * 864e5, REF_KEY = "ns_ref", ATTR_KEY = "ns_attr";
   var REF_RE = /^[A-Z0-9_]{2,40}$/;
