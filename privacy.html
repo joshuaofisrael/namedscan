@@ -13,7 +13,7 @@
 <header class="top"><div class="wrap nav"><a class="logo" href="./"><img src="assets/favicon.svg" alt="" width="30" height="30">NamedScan</a><a class="btn small" href="./#scan">Free preview</a></div></header>
 <main><section><div class="wrap legal">
 <h1>Privacy policy</h1>
-<p class="note">Effective 30 September 2026, updated 5 October 2026</p>
+<p class="note">Effective 30 September 2026, updated 6 October 2026</p>
 <p>NamedScan is operated by Joshua Israel Ventures LLC ("we", "us"). This policy explains what information we collect through this website and our AI visibility scans, and how we use it.</p>
 <h2>Information you give us</h2>
 <p>When you run a scan or contact us, you send us your name, email address, business name, website, city, state, and business category. The scan form sends these details to our scanning service, which runs on Cloudflare. We keep free preview requests and their results so Joshua can follow up about your scan. To limit abuse, we also keep a one way hash of your email address and of your IP address, which lets us enforce one free preview per person without storing your IP address itself.</p>
@@ -27,7 +27,9 @@
 </ul>
 <p>We do not sell your personal information, and we do not share it with third parties for their own marketing.</p>
 <h2>Cookies and analytics</h2>
-<p>This website does not use advertising or analytics trackers. The only cookie it sets is a referral cookie (ns_ref): if you arrive through a partner's link, we store that partner's code in a cookie and in your browser storage for 90 days and pass it to our Stripe checkout, so the partner can be credited if you buy. It contains only the partner code, nothing about you. Subscribers' access keys are saved in their own browser storage so they do not need to retype them. The site is hosted on GitHub Pages, and GitHub may collect technical information such as IP addresses in its server logs. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener" target="_blank">GitHub privacy statement</a> for details.</p>
+<p>If you arrive through a partner's link, we store that partner's code in a cookie (ns_ref) and in your browser storage for 90 days, and we pass it to Stripe checkout so the partner can be credited if you buy. That cookie contains only the partner code. If you arrive from a campaign link, we store the campaign details from that link for 90 days as well, in a cookie and in your browser storage, and we send them with your free preview request. Subscribers' access keys are saved in their own browser storage so they do not need to retype them. The site is hosted on GitHub Pages, and GitHub may collect technical information such as IP addresses in its server logs. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener" target="_blank">GitHub privacy statement</a> for details.</p>
+<h2>Advertising measurement</h2>
+<p>The site may use Google Analytics, Google Ads, and Meta Pixel cookies to measure how ads perform. Those cookies are set only when that measurement is turned on. We store campaign parameters for 90 days so we can tell which ad or campaign led to a free preview or a purchase. When there is no partner code, we may also pass a short campaign id to Stripe checkout.</p>
 <h2>Service providers</h2>
 <p>We use Stripe to handle payments (Stripe processes your card details; we never see or store full card numbers), Cloudflare to run the scanning service and store scan records, OpenAI to collect ChatGPT answers during free previews and full reports, and an email provider to send report links to paying customers.</p>
 <h2>How long we keep information</h2>
@@ -43,5 +45,7 @@
 </div></section></main>
 <footer><div class="wrap row"><div><strong style="color:#fff">NamedScan</strong><br>Operated by Joshua Israel Ventures LLC.</div><div><a href="./">Home</a><br>&copy; 2026 Joshua Israel Ventures LLC</div></div></footer>
 <script src="assets/ref.js" defer></script>
+<script src="js/tracking-config.js" defer></script>
+<script src="js/tracking.js" defer></script>
 </body>
 </html>
