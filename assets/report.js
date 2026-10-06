@@ -11,7 +11,7 @@ function nsBuy(plan, email) {
 function nsUnlockButtons(email) {
   return '<div class="cta unlock-cta"><a class="btn" href="' + nsEsc(nsBuy("single_report", email)) + '" data-plan="single_report">Full report $5</a>' +
     '<a class="btn ghost" href="' + nsEsc(nsBuy("done_for_you", email)) + '" data-plan="done_for_you">Done For You $300 a month</a></div>' +
-    '<p class="note">The $5 report is a one time snapshot of whether ChatGPT names you. Done For You means Joshua works the fixes and reruns the report each month. Your report is emailed to you, usually within one business day. Orders placed on weekends may experience delays.</p>';
+    '<p class="note">The $5 report is a one time snapshot of whether ChatGPT names you. Done For You at $300 a month means we make the fixes and rerun the report each month. Your report is emailed to you, usually within one business day. Orders placed on weekends may be delayed.</p>';
 }
 function nsLocked(title, rows) {
   var fake = [];
@@ -42,7 +42,7 @@ function nsRenderTeaser(el, r) {
   h.push(nsLocked("Website readiness findings", 3));
   h.push(nsLocked("Prioritized fix list", 3));
   h.push(nsLocked("Branded PDF report to download and share", 1));
-  h.push('<div class="lockover"><div class="lockcard"><strong>Unlock the full report</strong><p>See every question, every competitor, the sources AI relied on, your website findings and a prioritized fix list, with a branded PDF.</p>' + nsUnlockButtons(r._email) + '</div></div>');
+  h.push('<div class="lockover"><div class="lockcard"><strong>Unlock the full report</strong><p>See every question, every competitor, the sources ChatGPT cited, your website findings, and a prioritized fix list, with a branded PDF.</p>' + nsUnlockButtons(r._email) + '</div></div>');
   h.push('</div>');
   h.push('<p class="note">AI answers change often, so this preview is a dated snapshot. We work to improve and measure AI visibility; we do not promise or guarantee rankings or recommendations.</p>');
   h.push('</div>');
@@ -80,7 +80,7 @@ function nsRenderReport(el, r) {
     (live ? "AI visibility score" : "Website AI readiness") + ": " + sc.score + " of 100 (" + nsT(sc.band) + ")</strong><br><span class=\"note\">" +
     (live ? "Named in " + r.summary.mentions + " of " + r.summary.answered + " customer questions asked to ChatGPT" + (r.summary.best_position ? ", best list position " + r.summary.best_position : "") +
       ", website cited in " + r.summary.cited + " answers, share of voice " + nsPct(r.summary.share_of_voice) + "."
-      : "How ready your website is for AI assistants to read, trust and cite.") + "</span></div></div>");
+      : "How ready your website is for AI crawlers to read, trust, and cite.") + "</span></div></div>");
   if (!live) {
     h.push('<p class="note">This free check reads your website the way AI crawlers do. The full NamedScan report also asks ChatGPT, with live web search, the ' + (r.prompts || []).length +
       ' customer questions listed below and records whether your business is named and who is named instead.</p>');
@@ -149,7 +149,7 @@ function nsPdf(r) {
   doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(255, 255, 255); text("NamedScan", M + 32, 52);
   doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.setTextColor(214, 226, 240);
   text(live ? "AI Visibility Report" : "Website AI Readiness Report", M + 32, 70);
-  text("namedscan.com | operated by Joshua Israel Ventures LLC", M + 32, 86);
+  text("namedscan.com | Operated by Joshua Israel Ventures LLC", M + 32, 86);
   if (r.mode === "sample") stamp();
   y = 146;
   doc.setFont("helvetica", "bold"); doc.setFontSize(20); color(NAVY); text(r.business.name, M, y); y += 18;
@@ -181,7 +181,7 @@ function nsPdf(r) {
   }
   if (!live) {
     heading("What this free check covers");
-    para("This check reads your website the way AI crawlers do: page title, description, structured data, name, address and phone, services, FAQ content, reviews, robots.txt rules for AI crawlers, llms.txt and sitemap. The full NamedScan report also asks ChatGPT, with live web search, the customer questions listed in this report and records whether your business is named, where it ranks and who is named instead.", 10.5, INK);
+    para("This check reads your website the way AI crawlers do: page title, description, structured data, name, address, and phone, services, FAQ content, reviews, robots.txt rules for AI crawlers, llms.txt, and sitemap. The full NamedScan report also asks ChatGPT, with live web search, the customer questions listed in this report and records whether your business is named, where it is listed, and who is named instead.", 10.5, INK);
   }
   var fixes = r.fixes || [], shown = isFree ? fixes.slice(0, 3) : fixes;
   if (shown.length) {
