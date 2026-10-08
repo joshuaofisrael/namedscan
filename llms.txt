@@ -16,5 +16,5 @@ Operated by Joshua Israel Ventures LLC. NamedScan is a brand, not a separate com
 
 - [Partner program](https://namedscan.com/partners.html): referral partners earn 30% (Standard) or 40% (High Potential) of collected payments for the first 12 months of each referred customer
 - [Privacy policy](https://namedscan.com/privacy.html): what Joshua Israel Ventures LLC collects through NamedScan (preview form, Stripe checkout, report emails, cookies) and how it is used
-- [Terms of service](https://namedscan.com/terms.html): the contract with Joshua Israel Ventures LLC, billing through Stripe, monthly renewal until cancelled, no guarantee of AI or search results, Michigan law
+- [Terms of service](https://namedscan.com/terms.html): the contract with Joshua Israel Ventures LLC, billing through Stripe, monthly renewal until cancelled, no guarantee of AI or search results, Florida law
 - [Disclaimer](https://namedscan.com/disclaimer.html): accuracy, AI answers vary and change, no professional relationship, no guarantees, and the referral partner commission disclosure
