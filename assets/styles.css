@@ -118,3 +118,10 @@ form.lead button[disabled]{opacity:.7;cursor:wait}
 .plans.four{grid-template-columns:repeat(4,1fr)}
 @media (max-width:1100px){.plans.four{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:900px){.plans.four{grid-template-columns:1fr}}
+/* Footer: readable legal line and links (8 Oct 2026) */
+footer{font-size:15px;color:#e6edf5;line-height:1.7}
+footer .legal-links{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:flex-start}
+footer .legal-links a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+footer .copy{margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.25);color:#fff;font-size:15px}
+footer .copy p{margin:0}
+.about-line{font-size:17px;color:var(--ink)}
