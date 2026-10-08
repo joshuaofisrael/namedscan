@@ -1,10 +1,10 @@
 # NamedScan
 
-> NamedScan is an AI visibility service for local businesses. It asks ChatGPT, with live web search, the questions local customers ask, shows whether a business is recommended, mentioned or missing and which businesses are named instead, and delivers a dated, branded PDF report with a prioritized fix list (listings, reviews, website content and structured data). On monthly plans NamedScan works on the signals ChatGPT can use. NamedScan does not promise or guarantee rankings or recommendations.
+> NamedScan is a brand of Joshua Israel Ventures LLC, which owns and operates it. NamedScan is an AI visibility service for local businesses. It asks ChatGPT, with live web search, the questions local customers ask, shows whether a business is recommended, mentioned or missing and which businesses are named instead, and delivers a dated, branded PDF report with a prioritized fix list (listings, reviews, website content and structured data). On monthly plans NamedScan works on the signals ChatGPT can use. NamedScan does not promise or guarantee rankings or recommendations.
 
 Pricing shown on the site: a free preview (three customer questions, no card needed), a one time AI visibility report for $5 (15 questions and a PDF), and monthly plans: Starter (Guided) at $199 a month (you make the changes from a prioritized list), Done For You at $300 a month (recommended; NamedScan makes the fixes) and Growth at $500 a month (up to 3 locations, rescans every 2 weeks, competitor tracking and a monthly strategy call). Monthly plans can be cancelled anytime. Checkout is handled by Stripe.
 
-Operated by Joshua Israel Ventures LLC. Contact: joshuaofisrael@gmail.com
+Operated by Joshua Israel Ventures LLC. NamedScan is a brand, not a separate company: all sales, subscriptions and reports are provided by Joshua Israel Ventures LLC. Contact: joshuaofisrael@gmail.com
 
 ## Main pages
 
@@ -15,4 +15,6 @@ Operated by Joshua Israel Ventures LLC. Contact: joshuaofisrael@gmail.com
 ## More
 
 - [Partner program](https://namedscan.com/partners.html): referral partners earn 30% (Standard) or 40% (High Potential) of collected payments for the first 12 months of each referred customer
-- [Privacy policy](https://namedscan.com/privacy.html): what NamedScan collects when you run a scan or contact us, and how it is used
+- [Privacy policy](https://namedscan.com/privacy.html): what Joshua Israel Ventures LLC collects through NamedScan (preview form, Stripe checkout, report emails, cookies) and how it is used
+- [Terms of service](https://namedscan.com/terms.html): the contract with Joshua Israel Ventures LLC, billing through Stripe, monthly renewal until cancelled, no guarantee of AI or search results, Michigan law
+- [Disclaimer](https://namedscan.com/disclaimer.html): accuracy, AI answers vary and change, no professional relationship, no guarantees, and the referral partner commission disclosure
