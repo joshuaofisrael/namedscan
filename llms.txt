@@ -9,6 +9,7 @@ Operated by Joshua Israel Ventures LLC. NamedScan is a brand, not a separate com
 ## Main pages
 
 - [NamedScan home](https://namedscan.com/): what NamedScan does, how the scan works, a sample report layout, pricing, how local businesses show up in ChatGPT, FAQ and the free preview form
+- [How to get your business recommended by ChatGPT](https://namedscan.com/guides/get-recommended-by-chatgpt/): a 15 minute self check with four example prompts, how to mark a named, mentioned, or absent answer, and what to fix on your site and listings. No recommendation is guaranteed
 - [Pricing](https://namedscan.com/#pricing): free preview, $5 one time report, and the $199, $300 and $500 monthly plans compared
 - [FAQ](https://namedscan.com/#faq): straight answers about AI visibility scans, how ChatGPT picks local businesses, guarantees (none) and cancelling
 
