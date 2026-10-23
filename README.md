@@ -1,6 +1,6 @@
 # NamedScan
 
-Static marketing site for NamedScan, an AI visibility report product operated by Joshua Israel Ventures LLC.
+Static marketing site for NamedScan, an AI visibility report product.
 Hosted free on GitHub Pages from the `main` branch root at https://namedscan.com (CNAME file). No build step.
 
 Backend: Cloudflare Worker `namedscan-api` (source in the private workspace, not in this repo). The site only calls https://namedscan-api.joshofisrael.workers.dev; no API keys live in this repo.
