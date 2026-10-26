@@ -9,6 +9,7 @@ Contact: joshuaofisrael@gmail.com
 ## Main pages
 
 - [NamedScan home](https://namedscan.com/): what NamedScan does, how the scan works, a sample report layout, pricing, how local businesses show up in ChatGPT, FAQ and the free preview form
+- [Does ChatGPT recommend my business?](https://namedscan.com/does-chatgpt-recommend-my-business/): a self-check for a local owner. Ask as a customer without naming the business, use a fresh chat, state the city, repeat each prompt about three times, compare search on and off, record cited sources, and keep a branded accuracy check separate from discovery. Read the log as named consistently, sometimes, or not at all. No recommendation is guaranteed
 - [How to get your business recommended by ChatGPT](https://namedscan.com/guides/get-recommended-by-chatgpt/): a 15 minute self check with four example prompts, how to mark a named, mentioned, or absent answer, and what to fix on your site and listings. No recommendation is guaranteed
 - [AI's #1 local pick changed in about half of markets in one month](https://namedscan.com/news/ai-local-recommendations-change-october-2026/): 14 October 2026 news note. AI Syndicate Research found AI assistants changed their #1 local business in 52% of 245 US markets from September to October 2026. A Growth Rankers check the same month found local answers often differ when the same question is asked twice. NamedScan does not guarantee a recommendation
 - [Pricing](https://namedscan.com/#pricing): free preview, $5 one time report, and the $199, $300 and $500 monthly plans compared
