@@ -25,14 +25,13 @@
  </div>
 
 </footer>
-<script src="assets/vendor/jspdf.umd.min.js" defer></script>
 <script src="assets/report.js" defer></script>
 <script defer>
 window.addEventListener("DOMContentLoaded", function () {
   var q = new URLSearchParams(location.search), st = document.getElementById("rep-status");
   fetch(NS_API + "/api/report?id=" + encodeURIComponent(q.get("id") || "") + "&k=" + encodeURIComponent(q.get("k") || "")).then(function (r) { return r.json(); }).then(function (j) {
     if (!j.ok) { st.className = "scanstatus bad"; st.textContent = (j.message || "Report not found.") + " If you just ordered, your report may still be in progress."; return; }
-    st.hidden = true; document.getElementById("delivery-note").hidden = true; var ru = location.href.replace(/[&?]pdf=1/, ""); j.report.report_url = ru; nsRenderReport(document.getElementById("scan-result"), j.report); if (q.get("pdf") === "1") nsPdf(j.report);
+    st.hidden = true; document.getElementById("delivery-note").hidden = true; var ru = location.href.replace(/[&?]pdf=1/, ""); j.report.report_url = ru; nsRenderReport(document.getElementById("scan-result"), j.report); if (q.get("pdf") === "1") return nsPdf(j.report);
   }).catch(function () { st.className = "scanstatus bad"; st.textContent = "We could not load the report. Please try again."; });
 });
 </script>

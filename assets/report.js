@@ -1,4 +1,4 @@
-// NamedScan report rendering (on page) and branded PDF (jsPDF, generated in the browser). No secrets here.
+// NamedScan report rendering (on page) and branded PDF (jsPDF, loaded on demand in the browser). No secrets here.
 var NS_API = "https://namedscan-api.joshofisrael.workers.dev";
 var NS_LINKS = { single_report: "https://buy.stripe.com/aFa7sMc2A6c96FF3vWb3q1s", done_for_you: "https://buy.stripe.com/cNicN63w4cAx2ppgiIb3q1r" };
 // checkout link with the buyer's email prefilled (Stripe Payment Links support prefilled_email); ref.js adds any partner code at click time
@@ -125,7 +125,101 @@ function nsPdfClean(s) {
   return nsNodash(s).replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"').replace(/\u2026/g, "...").replace(/[^\x20-\x7e\xa0-\xff\n]/g, "");
 }
 
+function nsJsPdfUrl() {
+  var nodes = document.getElementsByTagName("script");
+  for (var i = nodes.length - 1; i >= 0; i--) {
+    var src = nodes[i].src || "";
+    if (/\/report\.js(?:[?#]|$)/.test(src)) return src.replace(/report\.js([?#].*)?$/, "vendor/jspdf.umd.min.js");
+  }
+  return "/assets/vendor/jspdf.umd.min.js";
+}
+
+var nsJsPdfLoading = null;
+function nsLoadJsPdf() {
+  if (window.jspdf && typeof window.jspdf.jsPDF === "function") return Promise.resolve(window.jspdf.jsPDF);
+  if (nsJsPdfLoading) return nsJsPdfLoading;
+  nsJsPdfLoading = new Promise(function (resolve, reject) {
+    var s = document.createElement("script");
+    var finished = false;
+    var timer = setTimeout(function () { finish(new Error("timeout")); }, 20000);
+    function finish(err) {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      if (window.jspdf && typeof window.jspdf.jsPDF === "function") { resolve(window.jspdf.jsPDF); return; }
+      nsJsPdfLoading = null;
+      if (s.parentNode) s.parentNode.removeChild(s);
+      reject(err || new Error("jspdf"));
+    }
+    s.src = nsJsPdfUrl();
+    s.async = true;
+    s.onload = function () { finish(); };
+    s.onerror = function () { finish(new Error("network")); };
+    document.head.appendChild(s);
+  });
+  return nsJsPdfLoading;
+}
+
+function nsPdfNote(msg, kind) {
+  var note = document.getElementById("pdf-status");
+  if (!msg) {
+    if (note) note.hidden = true;
+    return;
+  }
+  if (!note) {
+    note = document.createElement("p");
+    note.id = "pdf-status";
+    var host = document.getElementById("scan-result");
+    var btn = host && host.querySelector("[data-pdf]");
+    if (btn && btn.parentNode) btn.parentNode.insertAdjacentElement("afterend", note);
+    else if (host) host.appendChild(note);
+    else document.body.appendChild(note);
+  }
+  note.hidden = false;
+  note.className = "scanstatus" + (kind ? " " + kind : "");
+  note.setAttribute("role", kind === "bad" ? "alert" : "status");
+  note.textContent = msg;
+}
+
+function nsPdfPageStatus(msg, kind) {
+  var rep = document.getElementById("rep-status");
+  if (!rep) return;
+  if (!msg) {
+    if (rep.getAttribute("data-pdf-status")) { rep.hidden = true; rep.removeAttribute("data-pdf-status"); }
+    return;
+  }
+  rep.hidden = false;
+  rep.className = "scanstatus" + (kind ? " " + kind : "");
+  rep.setAttribute("data-pdf-status", "1");
+  rep.textContent = msg;
+}
+
 function nsPdf(r) {
+  var pending = !(window.jspdf && typeof window.jspdf.jsPDF === "function");
+  var btn = document.querySelector("#scan-result [data-pdf]");
+  if (pending) {
+    if (btn) btn.disabled = true;
+    nsPdfNote("Preparing your PDF...");
+    nsPdfPageStatus("Preparing your PDF...");
+  }
+  return nsLoadJsPdf().then(function () {
+    try { nsPdfBuild(r); }
+    catch (e) {
+      nsPdfNote("We could not create the PDF. Please try again.", "bad");
+      nsPdfPageStatus("We could not create the PDF. Please try again.", "bad");
+      return;
+    }
+    nsPdfNote("");
+    nsPdfPageStatus("");
+  }).catch(function () {
+    nsPdfNote("We could not load the PDF library. Please check your connection and try again.", "bad");
+    nsPdfPageStatus("We could not load the PDF library. Please check your connection and try again.", "bad");
+  }).then(function () {
+    if (btn && btn.isConnected) btn.disabled = false;
+  });
+}
+
+function nsPdfBuild(r) {
   var J = window.jspdf.jsPDF;
   var doc = new J({ unit: "pt", format: "letter" });
   var W = 612, H = 792, M = 48, y = 0;
