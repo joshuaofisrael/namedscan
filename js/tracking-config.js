@@ -1,6 +1,6 @@
 // Measurement IDs. Leave a value empty and that tag does not load.
 window.NS_TRACK = {
-  GA4_ID: "",
+  GA4_ID: "G-ZYW5LZ3DMH",
   GOOGLE_ADS_ID: "",
   GOOGLE_ADS_PREVIEW_LABEL: "",
   GOOGLE_ADS_PURCHASE_LABEL: "",
